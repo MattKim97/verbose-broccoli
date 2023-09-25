@@ -7,9 +7,9 @@ const usersRouter = require('./routers/users');
 const jungleEntrance = require('./routers/theJungle/jungleEntrance');
 
 app.use(express.json());
-app.use(usersRouter);
+app.use('/users', usersRouter);
 
-app.get('/boardgames', async(res, req, next) => {
+app.get('/boardgames', async(req, res, next) => {
     try {
         const boardgames = await Boardgame.findAll({
             include: [
@@ -18,7 +18,7 @@ app.get('/boardgames', async(res, req, next) => {
                     attributes: ['name']
                 }, 
                 {
-                    model: Reviews,
+                    model: Review,
                     attributes: ['content', 'rating'],
                     include: {
                         model: User,
@@ -28,7 +28,9 @@ app.get('/boardgames', async(res, req, next) => {
             ],
             order: [['name']]
         })
-        res.json(boardgame)
+
+        res.json(boardgames)
+
     } catch (err) {
         next(err)
     }
@@ -44,23 +46,27 @@ app.get('/boardgames/:id', async(req, res, next) => {
                 },
                 {
                     model: Review,
-                    attributes: ['content', 'rating'] 
-                },
-                {
-                    model: User,
-                    attributes: ['username']
+                    attributes: ['content', 'rating'],
+                        include: {
+                            model: User,
+                            attributes: ['username']
+                        }
                 }
             ],
         })
 
         const gameAggData = await Boardgame.findByPk(req.params.gameId, {
-            include: Review,
-            attributes: [
-                [sequelize.fn('AVG', sequelize.col('rating')), 'averageReviewRating'],
-                [sequelize.fn('SUM', sequelize.col('content')), 'reviewCount'],
-            ],
+            include:{
+            model: Review,
+            attributes: {
+                include: 
+                [
+                [sequelize.fn('AVG', sequelize.col("rating")),'averageReviewRating'],
+                [sequelize.fn('SUM', sequelize.col("content")), 'reviewCount'],
+            ]},
             raw: true
-        })
+        }
+    })
         if (!boardgame) {
             res.status(404)
             return res.json({
@@ -70,8 +76,8 @@ app.get('/boardgames/:id', async(req, res, next) => {
         }
 
         let gameResponse = boardgame.toJSON()
-        gameResponse.averageRating = gameAggData.averageReviewRating
-        gameResponse.numReviews = gameAggData.reviewCount
+        // gameResponse.averageRating = gameAggData.averageReviewRating
+        // gameResponse.numReviews = gameAggData.reviewCount
 
         return res.json(gameResponse)
     } catch (err) {

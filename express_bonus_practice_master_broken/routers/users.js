@@ -22,7 +22,7 @@ const signupValidator = [
 ]
 
 const userDeleteValidator = (req, res, next) => {
-    if (req.params.id !== req.body.userId) {
+    if (req.params.id != req.body.userId) {
         const err = new Error('You can only delete your own user account')
         err.status = 403
         err.title = 'Access denied'
@@ -33,6 +33,14 @@ const userDeleteValidator = (req, res, next) => {
 
 // request body must contain a username, an email and a password
 // request body may optionally contain a faveCategoryId
+
+router.get('/', async (req,res,next) => {
+    const users = await User.findAll();
+
+    res.json(users)
+})
+
+
 router.post('/signup', signupValidator, async(req, res, next) => {
     const {username, email, password, faveCategoryId} = req.body;
     try {
@@ -62,8 +70,7 @@ router.delete('/:id/destroy', userDeleteValidator, async(req, res, next) => {
             user
         })
     }
-    res.status(404)
-    return res.json({
+    return res.status(404).json({
         status: 404,
         message: 'This user could not be found'
     })

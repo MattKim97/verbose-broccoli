@@ -14,7 +14,7 @@ module.exports = {
     */
     await queryInterface.bulkInsert('Users', [
       { username: 'Alec', email: 'alec@alec.com', password: 'password123', faveCategoryId: 1 },
-      { username: 'Dan', email: 'dan@theman.com', password: 'password!', faveCategoryId: 5 },
+      { username: 'Dan', email: 'dan@theman.com', password: 'password!', faveCategoryId: 4 },
       { username: 'Olivia', email: 'liv@andletliv.com', password: 'password098', faveCategoryId: 3 },
       { username: 'Nate', email: 'nate@thegreat.com', password: 'password!@#', faveCategoryId: 2 }
     ], {});

@@ -19,8 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     username: {
       type: DataTypes.STRING,
       validate: {
-        len: {
-          args: [33],
+        min: {
+          args: [3],
           message: 'Your username must be at least three characters long'
         }
       }
@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     password: {
       type: DataTypes.STRING,
       validate: {
-        len: {
+        min: {
           args: [7],
           message: 'Your password must be at least seven characters long'
         }

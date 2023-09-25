@@ -17,11 +17,12 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER
       },
-      gameId: {
+      BoardgameId: {
         allowNull: false,
         type: Sequelize.INTEGER,
         references: {
-          model: 'Boardgames'
+          model: 'Boardgames',
+          key: 'id'
         }
       },
       userId: {
